@@ -57,7 +57,23 @@ const deltaToScales = (deltaX, deltaY) => {
     [shrinkX, growY],
     [growX, shrinkY],
     [shrinkX, shrinkY]
-  ];
+  ].map(scale => {
+
+    /*
+    if the scaleX is larger than scaleY, 
+    the inner has to grow taller to maintain the aspect ratio.
+    
+    if the scaleY is larger than scaleX,
+    the inner has to grow wider to maintain the aspect ratio.
+    */
+    const innerScale = scale[0] > scale[1] 
+      ? [1, scale[0] / scale[1]]
+      : [scale[1] / scale[0], 1];
+    return {
+      outer : scale.join(','),
+      inner : innerScale.join(',')
+    };
+  });
 };
 
 
@@ -85,7 +101,8 @@ const init = () => {
     
     const scales = deltaToScales(deltaX, deltaY);
     scales.forEach((scale, index) => {
-      panels[index].outer.style.transform = `scale(${scale})`;
+      panels[index].outer.style.transform = `scale(${scale.outer})`;
+      panels[index].inner.style.transform = `scale(${scale.inner})`;
     });
   });
   root.addEventListener('touchend', e => {

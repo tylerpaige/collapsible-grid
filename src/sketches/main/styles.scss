@@ -27,6 +27,7 @@ $gray: #888888;
 
 .panel {
   position: relative;
+  overflow: hidden;
 }
 
 .panel__inner {
@@ -39,12 +40,18 @@ $gray: #888888;
   background: rgba(white, 0.25);
 }
 
+.panel__inner img {
+  width: 100%;
+}
+
 
 $colors: $orange, $blue, $gray, $green;
 $origins: top left, top right, bottom left, bottom right;
 @for $i from 1 through 4 {
   .panel:nth-child(#{$i}) {
     background-color: nth($colors, $i);
+  }
+  .panel:nth-child(#{$i}) {
     transform-origin: nth($origins, $i);
   }
 }
