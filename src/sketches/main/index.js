@@ -62,15 +62,54 @@ const init = () => {
       panels[index].inner.style.transform = `scale(${scale.inner})`;
     });
 
+
     LAST_X = deltaX;
     LAST_Y = deltaY;
   });
-  const resetIncrement = 0.025;
+  const resetIncrement = 0.05;
   const resetStep = (deltaX, deltaY) => {
     //Doesn't really work for ones where delta is negative
     //Gotta do something with absolute values
-    const x = deltaX - resetIncrement < 0 ? 0 : deltaX - resetIncrement;
-    const y = deltaY - resetIncrement < 0 ? 0 : deltaY - resetIncrement;
+    let x;
+    let y;
+    let needsMoreX = true;
+    let needsMoreY = true;
+
+    if (deltaX < 0) {
+      x = deltaX + resetIncrement;
+      if (x > 0) {
+        needsMoreX = false;
+        x = 0;
+      }
+    } else if (deltaX > 0) {
+      x = deltaX - resetIncrement;
+      if (x < 0) {
+        needsMoreX = false;
+        x = 0;
+      }
+    } else {
+      needsMoreX = false;
+      x = 0;
+    }
+
+
+    if (deltaY < 0) {
+      y = deltaY + resetIncrement;
+      if (y > 0) {
+        needsMoreY = false;
+        y = 0;
+      }
+    } else if (deltaY > 0) {
+      y = deltaY - resetIncrement;
+      if (y < 0) {
+        needsMoreY = false;
+        y = 0;
+      }
+    } else {
+      needsMoreY = false;
+      y = 0;
+    }
+
     const scales = deltaToScales(x, y);
     scales.forEach((scale, index) => {
       panels[index].outer.style.transform = `scale(${scale.outer})`;
@@ -78,7 +117,7 @@ const init = () => {
     });
 
 
-    if (x > 0 || y > 0) {
+    if (needsMoreX || needsMoreY) {
       requestAnimationFrame(() => {
         resetStep(x, y);
       });
