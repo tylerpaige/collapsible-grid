@@ -1,51 +1,6 @@
 import './styles.scss';
 import roundTo from '../../util/round-to';
-
-const pointToPositions = ({ x, y }) => {
-  const topLeftScale = [x, y];
-  const topRightScale = [(1 - x), y];
-  const bottomRightScale = [1 - x, (1 - y)];
-  const bottomLeftScale = [x, (1 - y)];
-  const inverseScales = [
-    topLeftScale,
-    topRightScale,
-    bottomRightScale,
-    bottomLeftScale
-  ].map(s => {
-    return s.map(p => 1 / p);
-  });
-  const [
-    topLeftInverseScale,
-    topRightInverseScale,
-    bottomRightInverseScale,
-    bottomLeftInverseScale
-  ] = inverseScales;
-  return [
-    [
-      topLeftScale,
-      topLeftInverseScale
-    ],
-    [
-      topRightScale,
-      topRightInverseScale
-    ],
-    [
-      bottomLeftScale,
-      bottomLeftInverseScale
-    ],
-    [
-      bottomRightScale,
-      bottomRightInverseScale
-    ]
-  ]
-};
-
-const pointToScales = ([scaleArr, inverseScaleArr]) => {
-  return {
-    scale : scaleArr.map(s => roundTo(s, 4)).join(', '),
-    inverseScale : inverseScaleArr.map(s => roundTo(s, 4)).join(', ')
-  };
-};
+import clamp from '../../util/clamp';
 
 const deltaToScales = (deltaX, deltaY) => {
   const growX = (deltaX / 0.5) + 1;
@@ -89,6 +44,8 @@ const init = () => {
 
   let START_X;
   let START_Y;
+  let LAST_X;
+  let LAST_Y;
   let RESET_DELAY;
   root.addEventListener('touchstart', e => {
     root.classList.remove('is-resetting');
@@ -104,17 +61,31 @@ const init = () => {
       panels[index].outer.style.transform = `scale(${scale.outer})`;
       panels[index].inner.style.transform = `scale(${scale.inner})`;
     });
+
+    LAST_X = deltaX;
+    LAST_Y = deltaY;
   });
-  root.addEventListener('touchend', e => {
-    clearTimeout(RESET_DELAY);
-    root.classList.add('is-resetting');
-    panels.forEach(({ inner, outer }) => {
-      inner.style.transform = `scale(1)`;
-      outer.style.transform = `scale(1)`;
+  const resetIncrement = 0.025;
+  const resetStep = (deltaX, deltaY) => {
+    //Doesn't really work for ones where delta is negative
+    //Gotta do something with absolute values
+    const x = deltaX - resetIncrement < 0 ? 0 : deltaX - resetIncrement;
+    const y = deltaY - resetIncrement < 0 ? 0 : deltaY - resetIncrement;
+    const scales = deltaToScales(x, y);
+    scales.forEach((scale, index) => {
+      panels[index].outer.style.transform = `scale(${scale.outer})`;
+      panels[index].inner.style.transform = `scale(${scale.inner})`;
     });
-    setTimeout(() => {
-      RESET_DELAY = root.classList.remove('is-resetting');
-    }, 300);
+
+
+    if (x > 0 || y > 0) {
+      requestAnimationFrame(() => {
+        resetStep(x, y);
+      });
+    }
+  };
+  root.addEventListener('touchend', e => {
+    resetStep(LAST_X, LAST_Y);
   });
 };
 
