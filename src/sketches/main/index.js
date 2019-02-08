@@ -73,7 +73,9 @@ const init = () => {
 
   let START_X;
   let START_Y;
+  let RESET_DELAY;
   root.addEventListener('touchstart', e => {
+    root.classList.remove('is-resetting');
     START_X = e.touches[0].clientX / root.clientWidth;
     START_Y = e.touches[0].clientY / root.clientHeight;
   });
@@ -84,18 +86,18 @@ const init = () => {
     const scales = deltaToScales(deltaX, deltaY);
     scales.forEach((scale, index) => {
       panels[index].outer.style.transform = `scale(${scale})`;
-    })
-
-    // const positions = pointToPositions({x, y});
-    // const scales = positions.map(pointToScales);
-    // console.log(scales);
-    // scales.forEach(({ scale, inverseScale }, index) => {
-    //   panels[index].outer.style.transform = `scale(${scale})`;
-    //   // panels[index].inner.style.transform = `scale(${inverseScale})`;
-    // });
+    });
   });
   root.addEventListener('touchend', e => {
-    //reset to origin
+    clearTimeout(RESET_DELAY);
+    root.classList.add('is-resetting');
+    panels.forEach(({ inner, outer }) => {
+      inner.style.transform = `scale(1)`;
+      outer.style.transform = `scale(1)`;
+    });
+    setTimeout(() => {
+      RESET_DELAY = root.classList.remove('is-resetting');
+    }, 300);
   });
 };
 

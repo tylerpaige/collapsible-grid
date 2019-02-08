@@ -48,3 +48,10 @@ $origins: top left, top right, bottom left, bottom right;
     transform-origin: nth($origins, $i);
   }
 }
+
+.is-resetting {
+  .panel,
+  .panel__inner {
+    transition: transform ease-out 300ms;
+  }
+}
