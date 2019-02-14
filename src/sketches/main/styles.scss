@@ -74,9 +74,11 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 33px;
+  font-size: 24px;
   line-height: 1;
-  padding: 10px;
+  padding: 10px 12px;
+  font-family: 'Prata', serif;
+  font-family: 'Libre Baskerville', serif;
 }
 .full-content {
   width: 100%;
@@ -170,7 +172,9 @@ p + p {
 
 .full-content {
   padding: 10px;
-  font-size: 18px;
+  font-family: 'Noticia Text', serif;
+  font-size: 15px;
+  line-height: 1.25;
 }
 .panel:nth-child(1) {
   grid-column: 1 / 2;
@@ -191,10 +195,10 @@ p + p {
 
 @media screen and (max-width: 375px) {
   .thumbnail {
-    font-size: 25px;
+    font-size: 21px;
   }
   .full-content {
-    font-size: 15px;
+    font-size: 13px;
   }
 }
 
