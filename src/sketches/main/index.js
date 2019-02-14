@@ -21,9 +21,7 @@ const deltaToScales = (deltaX, deltaY) => {
     if the scaleY is larger than scaleX,
     the inner has to grow wider to maintain the aspect ratio.
     */
-    const innerScale = scale[0] > scale[1] 
-      ? [1, scale[0] / scale[1]]
-      : [scale[1] / scale[0], 1];
+    const innerScale = scale.map(s => 1 / s);
     return {
       outer : scale.join(','),
       inner : innerScale.join(',')
