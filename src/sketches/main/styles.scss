@@ -20,7 +20,7 @@ body {
 
 .parent {
   width: 100%;
-  max-width: 500px;
+  max-width: 400px;
   overflow: hidden;
 }
 
@@ -158,4 +158,13 @@ p + p {
 .full-content {
   padding: 10px;
   font-size: 18px;
+}
+
+@media screen and (max-width: 375px) {
+  .thumbnail {
+    font-size: 25px;
+  }
+  .full-content {
+    font-size: 15px;
+  }
 }
