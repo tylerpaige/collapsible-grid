@@ -47,6 +47,7 @@ $gray: #888888;
 
 $colors: $orange, $blue, $gray, $green;
 $colors: #FBF5E3, #FA4827, #FB9826, #276155;
+$colors: #276155, #FA4827, #276155, #FA4827;
 $origins: top left, top right, bottom left, bottom right;
 $offsets: (0, 0), (-100%, 0), (0, -100%), (-100%, -100%);
 @for $i from 1 through 4 {
@@ -73,6 +74,3 @@ $offsets: (0, 0), (-100%, 0), (0, -100%), (-100%, -100%);
   }
 }
 
-.panel:nth-child(1) .panel__inner {
-  mix-blend-mode: multiply;
-}
