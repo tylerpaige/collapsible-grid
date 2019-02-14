@@ -120,6 +120,7 @@ const init = () => {
 
 
   root.addEventListener('touchstart', e => {
+    // e.preventDefault();
     START_X = e.touches[0].clientX / root.clientWidth;
     START_Y = e.touches[0].clientY / root.clientHeight;
   });
@@ -130,6 +131,7 @@ const init = () => {
     root.addEventListener('mousemove', followMouse);
   });
   root.addEventListener('touchmove', (e) =>{
+    // e.preventDefault();
     const deltaX = (e.touches[0].clientX / root.clientWidth) - START_X;
     const deltaY = (e.touches[0].clientY / root.clientHeight) - START_Y;
     
