@@ -12,6 +12,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin: 10px;
 }
 * {
   box-sizing: border-box;
@@ -78,7 +79,7 @@ body {
 
 $colors: $orange, $blue, $gray, $green;
 $colors: #FBF5E3, #FA4827, #FB9826, #276155;
-$textColors: #333333, #ffffff, #333333, #ffffff;
+$textColors: #333333, #FFE2DC, #5c3400, #d7efde;
 // $colors: #276155, #FA4827, #276155, #FA4827;
 $origins: top left, top right, bottom left, bottom right;
 $offsets: (0, 0), (-100%, 0), (0, -100%), (-100%, -100%);
@@ -118,7 +119,12 @@ $floats: left, right, left, right;
   }
 }
 
-
+.panel:nth-child(2) {
+  .thumbnail {
+    float: none;
+    left: 50%;
+  }
+}
 
 .panel:nth-child(3) {
   .thumbnail {
@@ -130,7 +136,7 @@ $floats: left, right, left, right;
     float: left;
     width: 50%;
     height: 100%;
-    shape-outside: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
+    // shape-outside: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
   }
 }
 .panel:nth-child(4) {
