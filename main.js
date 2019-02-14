@@ -95,7 +95,7 @@
 
 exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js")(false);
 // Module
-exports.push([module.i, "* {\n  box-sizing: border-box; }\n\n.parent {\n  width: 100%;\n  max-width: 500px;\n  overflow: hidden; }\n\n.square-sizer {\n  padding-top: 100%;\n  position: relative; }\n\n.inner {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  display: grid;\n  grid-template: 1fr 1fr / 1fr 1fr; }\n\n.panel {\n  position: relative;\n  overflow: hidden; }\n\n.panel__inner {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 200%;\n  height: 200%; }\n\n.panel__inner img {\n  width: 100%;\n  -webkit-filter: grayscale(1);\n  filter: grayscale(1); }\n\n.thumbnail {\n  width: 50%;\n  height: 50%;\n  text-align: center;\n  position: relative;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 33px;\n  line-height: 1;\n  padding: 10px; }\n\n.full-content {\n  width: 100%;\n  height: 100%; }\n\n.panel:nth-child(1) {\n  background-color: #FBF5E3;\n  color: #333333; }\n\n.panel:nth-child(1),\n.panel:nth-child(1) .panel__inner {\n  -webkit-transform-origin: top left;\n  transform-origin: top left; }\n\n.panel:nth-child(1) .panel__inner {\n  top: 0;\n  left: 0; }\n\n.panel:nth-child(1) .thumbnail {\n  float: left; }\n\n.panel:nth-child(2) {\n  background-color: #FA4827;\n  color: #ffffff; }\n\n.panel:nth-child(2),\n.panel:nth-child(2) .panel__inner {\n  -webkit-transform-origin: top right;\n  transform-origin: top right; }\n\n.panel:nth-child(2) .panel__inner {\n  top: 0;\n  left: -100%; }\n\n.panel:nth-child(2) .thumbnail {\n  float: right; }\n\n.panel:nth-child(3) {\n  background-color: #FB9826;\n  color: #333333; }\n\n.panel:nth-child(3),\n.panel:nth-child(3) .panel__inner {\n  -webkit-transform-origin: bottom left;\n  transform-origin: bottom left; }\n\n.panel:nth-child(3) .panel__inner {\n  top: -100%;\n  left: 0; }\n\n.panel:nth-child(3) .thumbnail {\n  float: left; }\n\n.panel:nth-child(3) .thumbnail {\n  top: 50%; }\n\n.panel:nth-child(4) {\n  background-color: #276155;\n  color: #ffffff; }\n\n.panel:nth-child(4),\n.panel:nth-child(4) .panel__inner {\n  -webkit-transform-origin: bottom right;\n  transform-origin: bottom right; }\n\n.panel:nth-child(4) .panel__inner {\n  top: -100%;\n  left: -100%; }\n\n.panel:nth-child(4) .thumbnail {\n  float: right; }\n\n.panel:nth-child(4) .thumbnail {\n  top: 50%; }\n\n.is-resetting .panel,\n.is-resetting .panel__inner {\n  transition: -webkit-transform ease-out 300ms;\n  transition: transform ease-out 300ms;\n  transition: transform ease-out 300ms, -webkit-transform ease-out 300ms; }\n\n.panel:nth-child(3) .thumbnail {\n  position: absolute;\n  left: 0;\n  right: 0; }\n\n.panel:nth-child(3) .spacer {\n  float: left;\n  width: 50%;\n  height: 100%;\n  shape-outside: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%); }\n\n.panel:nth-child(4) .thumbnail {\n  position: absolute;\n  bottom: 0;\n  right: 0; }\n\n.panel:nth-child(4) .spacer {\n  float: right;\n  width: 50%;\n  height: 100%;\n  shape-outside: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%); }\n\np {\n  margin: 0; }\n\np + p {\n  margin-top: 0.5em; }\n\n.full-content {\n  padding: 10px;\n  font-size: 18px; }\n", ""]);
+exports.push([module.i, "html,\nbody {\n  height: 100%; }\n\nbody {\n  display: flex;\n  flex-direction: column;\n  justify-content: center;\n  align-items: center;\n  margin: 10px; }\n\n* {\n  box-sizing: border-box;\n  -webkit-user-select: none;\n  -moz-user-select: none;\n  -ms-user-select: none;\n  user-select: none; }\n\n.parent {\n  width: 100%;\n  max-width: 400px;\n  overflow: hidden; }\n\n.square-sizer {\n  padding-top: 100%;\n  position: relative; }\n\n.inner {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  display: grid;\n  grid-template: 1fr 1fr / 1fr 1fr; }\n\n.panel {\n  position: relative;\n  overflow: hidden; }\n\n.panel__inner {\n  position: absolute;\n  top: 0;\n  left: 0;\n  width: 200%;\n  height: 200%; }\n\n.panel__inner img {\n  width: 100%;\n  -webkit-filter: grayscale(1);\n  filter: grayscale(1); }\n\n.thumbnail {\n  width: 50%;\n  height: 50%;\n  text-align: center;\n  position: relative;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  font-size: 33px;\n  line-height: 1;\n  padding: 10px; }\n\n.full-content {\n  width: 100%;\n  height: 100%; }\n\n.panel:nth-child(1) {\n  background-color: #FBF5E3;\n  color: #333333; }\n\n.panel:nth-child(1),\n.panel:nth-child(1) .panel__inner {\n  -webkit-transform-origin: top left;\n  transform-origin: top left; }\n\n.panel:nth-child(1) .panel__inner {\n  top: 0;\n  left: 0; }\n\n.panel:nth-child(1) .thumbnail {\n  float: left; }\n\n.panel:nth-child(2) {\n  background-color: #FA4827;\n  color: #FFE2DC; }\n\n.panel:nth-child(2),\n.panel:nth-child(2) .panel__inner {\n  -webkit-transform-origin: top right;\n  transform-origin: top right; }\n\n.panel:nth-child(2) .panel__inner {\n  top: 0;\n  left: -100%; }\n\n.panel:nth-child(2) .thumbnail {\n  float: right; }\n\n.panel:nth-child(3) {\n  background-color: #FB9826;\n  color: #5c3400; }\n\n.panel:nth-child(3),\n.panel:nth-child(3) .panel__inner {\n  -webkit-transform-origin: bottom left;\n  transform-origin: bottom left; }\n\n.panel:nth-child(3) .panel__inner {\n  top: -100%;\n  left: 0; }\n\n.panel:nth-child(3) .thumbnail {\n  float: left; }\n\n.panel:nth-child(3) .thumbnail {\n  top: 50%; }\n\n.panel:nth-child(4) {\n  background-color: #276155;\n  color: #d7efde; }\n\n.panel:nth-child(4),\n.panel:nth-child(4) .panel__inner {\n  -webkit-transform-origin: bottom right;\n  transform-origin: bottom right; }\n\n.panel:nth-child(4) .panel__inner {\n  top: -100%;\n  left: -100%; }\n\n.panel:nth-child(4) .thumbnail {\n  float: right; }\n\n.panel:nth-child(4) .thumbnail {\n  top: 50%; }\n\n.is-resetting .panel,\n.is-resetting .panel__inner {\n  transition: -webkit-transform ease-out 300ms;\n  transition: transform ease-out 300ms;\n  transition: transform ease-out 300ms, -webkit-transform ease-out 300ms; }\n\n.panel:nth-child(2) .thumbnail {\n  float: none;\n  left: 50%; }\n\n.panel:nth-child(3) .thumbnail {\n  position: absolute;\n  left: 0;\n  right: 0; }\n\n.panel:nth-child(3) .spacer {\n  float: left;\n  width: 50%;\n  height: 100%; }\n\n.panel:nth-child(4) .thumbnail {\n  position: absolute;\n  bottom: 0;\n  right: 0; }\n\n.panel:nth-child(4) .spacer {\n  float: right;\n  width: 50%;\n  height: 100%;\n  shape-outside: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%); }\n\np {\n  margin: 0; }\n\np + p {\n  margin-top: 0.5em; }\n\n.full-content {\n  padding: 10px;\n  font-size: 18px; }\n\n@media screen and (max-width: 375px) {\n  .thumbnail {\n    font-size: 25px; }\n  .full-content {\n    font-size: 15px; } }\n", ""]);
 
 
 
@@ -760,14 +760,10 @@ var init = function init() {
   var LAST_X;
   var LAST_Y;
   var RESET_DELAY;
-  root.addEventListener('touchstart', function (e) {
-    root.classList.remove('is-resetting');
-    START_X = e.touches[0].clientX / root.clientWidth;
-    START_Y = e.touches[0].clientY / root.clientHeight;
-  });
-  root.addEventListener('touchmove', function (e) {
-    var deltaX = e.touches[0].clientX / root.clientWidth - START_X;
-    var deltaY = e.touches[0].clientY / root.clientHeight - START_Y;
+
+  var followMouse = function followMouse(e) {
+    var deltaX = e.clientX / root.clientWidth - START_X;
+    var deltaY = e.clientY / root.clientHeight - START_Y;
     var scales = deltaToScales(deltaX, deltaY);
     scales.forEach(function (scale, index) {
       panels[index].outer.style.transform = "scale(".concat(scale.outer, ")");
@@ -775,7 +771,8 @@ var init = function init() {
     });
     LAST_X = deltaX;
     LAST_Y = deltaY;
-  });
+  };
+
   var resetIncrement = 0.05;
 
   var resetStep = function resetStep(deltaX, deltaY) {
@@ -837,8 +834,32 @@ var init = function init() {
     }
   };
 
+  root.addEventListener('touchstart', function (e) {
+    START_X = e.touches[0].clientX / root.clientWidth;
+    START_Y = e.touches[0].clientY / root.clientHeight;
+  });
+  root.addEventListener('mousedown', function (e) {
+    START_X = e.clientX / root.clientWidth;
+    START_Y = e.clientY / root.clientHeight;
+    root.addEventListener('mousemove', followMouse);
+  });
+  root.addEventListener('touchmove', function (e) {
+    var deltaX = e.touches[0].clientX / root.clientWidth - START_X;
+    var deltaY = e.touches[0].clientY / root.clientHeight - START_Y;
+    var scales = deltaToScales(deltaX, deltaY);
+    scales.forEach(function (scale, index) {
+      panels[index].outer.style.transform = "scale(".concat(scale.outer, ")");
+      panels[index].inner.style.transform = "scale(".concat(scale.inner, ")");
+    });
+    LAST_X = deltaX;
+    LAST_Y = deltaY;
+  });
   root.addEventListener('touchend', function (e) {
     resetStep(LAST_X, LAST_Y);
+  });
+  document.addEventListener('mouseup', function (e) {
+    resetStep(LAST_X, LAST_Y);
+    root.removeEventListener('mousemove', followMouse);
   });
 };
 
