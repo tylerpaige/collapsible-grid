@@ -45,14 +45,10 @@ const init = () => {
   let LAST_X;
   let LAST_Y;
   let RESET_DELAY;
-  root.addEventListener('touchstart', e => {
-    root.classList.remove('is-resetting');
-    START_X = e.touches[0].clientX / root.clientWidth;
-    START_Y = e.touches[0].clientY / root.clientHeight;
-  });
-  root.addEventListener('touchmove', (e) =>{
-    const deltaX = (e.touches[0].clientX / root.clientWidth) - START_X;
-    const deltaY = (e.touches[0].clientY / root.clientHeight) - START_Y;
+
+  const followMouse = e => {
+    const deltaX = (e.clientX / root.clientWidth) - START_X;
+    const deltaY = (e.clientY / root.clientHeight) - START_Y;
     
     const scales = deltaToScales(deltaX, deltaY);
     scales.forEach((scale, index) => {
@@ -60,10 +56,10 @@ const init = () => {
       panels[index].inner.style.transform = `scale(${scale.inner})`;
     });
 
-
     LAST_X = deltaX;
     LAST_Y = deltaY;
-  });
+  };
+
   const resetIncrement = 0.05;
   const resetStep = (deltaX, deltaY) => {
     //Doesn't really work for ones where delta is negative
@@ -121,9 +117,39 @@ const init = () => {
       });
     }
   };
+
+
+  root.addEventListener('touchstart', e => {
+    START_X = e.touches[0].clientX / root.clientWidth;
+    START_Y = e.touches[0].clientY / root.clientHeight;
+  });
+  root.addEventListener('mousedown', e => {
+    START_X = e.clientX / root.clientWidth;
+    START_Y = e.clientY / root.clientHeight;
+
+    root.addEventListener('mousemove', followMouse);
+  });
+  root.addEventListener('touchmove', (e) =>{
+    const deltaX = (e.touches[0].clientX / root.clientWidth) - START_X;
+    const deltaY = (e.touches[0].clientY / root.clientHeight) - START_Y;
+    
+    const scales = deltaToScales(deltaX, deltaY);
+    scales.forEach((scale, index) => {
+      panels[index].outer.style.transform = `scale(${scale.outer})`;
+      panels[index].inner.style.transform = `scale(${scale.inner})`;
+    });
+
+    LAST_X = deltaX;
+    LAST_Y = deltaY;
+  });
   root.addEventListener('touchend', e => {
     resetStep(LAST_X, LAST_Y);
   });
+  document.addEventListener('mouseup', e =>{
+
+    resetStep(LAST_X, LAST_Y);
+    root.removeEventListener('mousemove', followMouse);
+  })
 };
 
 document.addEventListener('DOMContentLoaded', init);

@@ -3,8 +3,19 @@ $blue: #88C8F0;
 $green: #BBDD37;
 $gray: #888888;
 
+html,
+body {
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 * {
   box-sizing: border-box;
+  user-select: none;
 }
 
 .parent {
