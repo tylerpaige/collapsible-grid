@@ -1,5 +1,5 @@
 import './styles.scss';
-import roundTo from '../../util/round-to';
+import * as Rx from 'rxjs';
 import clamp from '../../util/clamp';
 
 const deltaToScales = (deltaX, deltaY) => {
@@ -42,24 +42,88 @@ const init = () => {
   let START_Y;
   let LAST_X;
   let LAST_Y;
-  let RESET_DELAY;
+  let TRACKING = false;
 
-  const followMouse = e => {
-    const deltaX = e.clientX / root.clientWidth - START_X;
-    const deltaY = e.clientY / root.clientHeight - START_Y;
+  /*
+  ------------
+  START EVENTS
+  ------------
+  */
+  const mouseDown$ = Rx.fromEvent(document.documentElement, 'mousedown').map(
+    e => ({
+      x: e.clientX,
+      y: e.clientY
+    })
+  );
+  const touchStart$ = Rx.fromEvent(document.documentElement, 'touchstart').map(
+    e => ({
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY
+    })
+  );
+  const start$ = Rx.Observable.merge(mouseDown$, touchStart$);
 
-    const scales = deltaToScales(deltaX, deltaY);
-    scales.forEach((scale, index) => {
-      panels[index].outer.style.transform = `scale(${scale.outer})`;
-      panels[index].inner.style.transform = `scale(${scale.inner})`;
-    });
+  start$.subscribe(({ x, y }) => {
+    START_X = x / root.clientWidth;
+    START_Y = y / root.clientHeight;
+    TRACKING = true;
+  });
 
-    LAST_X = deltaX;
-    LAST_Y = deltaY;
-  };
+  /*
+  ------------
+  MOVE EVENTS
+  ------------
+  */
+  const mouseMove$ = Rx.fromEvent(document.documentElement, 'mousemove').map(
+    event => ({
+      x: event.clientX,
+      y: event.clientY
+    })
+  );
+  const touchMove$ = Rx.fromEvent(document.documentElement, 'touchmove').map(
+    event => ({
+      x: event.touches[0].clientX,
+      y: event.touches[0].clientY
+    })
+  );
 
-  const resetIncrement = 0.05;
+  const move$ = Rx.Observable.merge(mouseMove$, touchMove$);
+  move$.subscribe(({ x, y }) => {
+    if (TRACKING) {
+      const deltaX = x / root.clientWidth - START_X;
+      const deltaY = y / root.clientHeight - START_Y;
+
+      const scales = deltaToScales(deltaX, deltaY);
+      scales.forEach((scale, index) => {
+        panels[index].outer.style.transform = `scale(${scale.outer})`;
+        panels[index].inner.style.transform = `scale(${scale.inner})`;
+      });
+
+      LAST_X = deltaX;
+      LAST_Y = deltaY;
+    }
+  });
+
+  /*
+  -------------
+  RESET EVENTS
+  -------------
+  */
+  const mouseUp$ = Rx.fromEvent(document.documentElement, 'mouseup');
+  const touchEnd$ = Rx.fromEvent(document.documentElement, 'touchend');
+  const end$ = Rx.Observable.merge(mouseUp$, touchEnd$);
+
+  end$.subscribe(() => {
+    const descendingX = LAST_X > 0;
+    const descendingY = LAST_Y > 0;
+
+    resetStep(LAST_X, LAST_Y, descendingX, descendingY);
+
+    TRACKING = false;
+  });
+
   const resetStep = (deltaX, deltaY, descendingX, descendingY) => {
+    const resetIncrement = 0.05;
     const targetX = descendingX
       ? deltaX - resetIncrement
       : deltaX + resetIncrement;
@@ -84,43 +148,6 @@ const init = () => {
       });
     }
   };
-
-  root.addEventListener('touchstart', e => {
-    // e.preventDefault();
-    START_X = e.touches[0].clientX / root.clientWidth;
-    START_Y = e.touches[0].clientY / root.clientHeight;
-  });
-  root.addEventListener('mousedown', e => {
-    START_X = e.clientX / root.clientWidth;
-    START_Y = e.clientY / root.clientHeight;
-
-    root.addEventListener('mousemove', followMouse);
-  });
-  root.addEventListener('touchmove', e => {
-    // e.preventDefault();
-    const deltaX = e.touches[0].clientX / root.clientWidth - START_X;
-    const deltaY = e.touches[0].clientY / root.clientHeight - START_Y;
-
-    const scales = deltaToScales(deltaX, deltaY);
-    scales.forEach((scale, index) => {
-      panels[index].outer.style.transform = `scale(${scale.outer})`;
-      panels[index].inner.style.transform = `scale(${scale.inner})`;
-    });
-
-    LAST_X = deltaX;
-    LAST_Y = deltaY;
-  });
-  root.addEventListener('touchend', e => {
-    console.log({ LAST_X, LAST_Y });
-    const descendingX = LAST_X > 0;
-    const descendingY = LAST_Y > 0;
-
-    resetStep(LAST_X, LAST_Y, descendingX, descendingY);
-  });
-  document.addEventListener('mouseup', e => {
-    resetStep(LAST_X, LAST_Y);
-    root.removeEventListener('mousemove', followMouse);
-  });
 };
 
 document.addEventListener('DOMContentLoaded', init);
