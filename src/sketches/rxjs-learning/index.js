@@ -2,48 +2,41 @@
 import { fromEvent, merge } from 'rxjs';
 import { takeUntil, mergeMap, map, switchMap } from 'rxjs/operators';
 
-const init = () => {
-  // console.log({fromEvent, takeUntil, mergeMap});
-  const el = document.querySelector('div');
+const getMouseObservables = el => {
+  return ['mousedown', 'mousemove', 'mouseup'].map(event => {
+    return fromEvent(el, event).pipe(
+      map(e => ({
+        x: e.clientX,
+        y: e.clientY
+      }))
+    );
+  });
+};
 
-  const mousedown$ = fromEvent(el, 'mousedown').pipe(
-    map(e => ({
-      x: e.clientX,
-      y: e.clientY
-    }))
-  );
-  const mousemove$ = fromEvent(el, 'mousemove').pipe(
-    map(e => ({ x: e.clientX, y: e.clientY }))
-  );
-  const mouseup$ = fromEvent(el, 'mouseup');
+const getTouchObservables = el => {
+  return ['touchstart', 'touchmove', 'touchend'].map(event => {
+    return fromEvent(el, event).pipe(
+      map(e => {
+        // if (e.type === 'touchend') {
+        //   console.log(e);
+        // }
+        return({
+          x: e.touches[0].clientX,
+          y: e.touches[0].clientY
+        })
+      })
+    );
+  });
+};
 
-  const touchstart$ = fromEvent(el, 'touchstart').pipe(
-    map(e => ({
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY
-    }))
-  );
-  const touchmove$ = fromEvent(el, 'touchmove').pipe(
-    map(e => ({
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY
-    }))
-  );
-  const touchend$ = fromEvent(el, 'touchend');
+const getObservables = el => {
+  const [mousedown$, mousemove$, mouseup$] = getMouseObservables(el);
+
+  const [touchstart$, touchmove$, touchend$] = getTouchObservables(el);
 
   const start$ = merge(mousedown$, touchstart$);
   const move$ = merge(mousemove$, touchmove$);
   const end$ = merge(mouseup$, touchend$);
-
-  // This works and is good to reference
-  // const pull$ = mousedown$.pipe(
-  //   mergeMap(down => mousemove$.pipe(
-  //     takeUntil(mouseup$)
-  //   ))
-  // );
-  // pull$.subscribe(e => {
-  //   console.log(e);
-  // })
 
   const drag$ = start$.pipe(
     switchMap(e => {
@@ -61,7 +54,31 @@ const init = () => {
       );
     })
   );
-  drag$.subscribe(e => console.log(e));
+  const reset$ = start$.pipe(
+    switchMap(e => {
+      const startingX = e.x;
+      const startingY = e.x;
+      return end$.pipe(
+        map(e => {
+          return {
+            dx: e.x - startingX,
+            dy: e.y - startingY
+          }
+        })
+      )
+    })
+  );
+  return {
+    drag$,
+    reset$
+  };
+};
+
+const init = () => {
+  const el = document.querySelector('div');
+  const { drag$, reset$ } = getObservables(el);
+  drag$.subscribe(e => console.log('drag', e));
+  reset$.subscribe(e => console.log('reset', e));
 };
 
 document.addEventListener('DOMContentLoaded', init);
