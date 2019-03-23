@@ -8,7 +8,7 @@ const state = {
   quadrant: false
 };
 
-const getMouseObservables = el => {
+const getMouseObservables = (el, nav) => {
   return [
     {
       target: el,
@@ -19,7 +19,7 @@ const getMouseObservables = el => {
       event: 'mousemove'
     },
     {
-      target: document,
+      target: nav,
       event: 'mouseup'
     }
   ].map(({ target, event }) => {
@@ -48,8 +48,8 @@ const getTouchObservables = el => {
   });
 };
 
-const getObservables = (el, pages) => {
-  const [mousedown$, mousemove$, mouseup$] = getMouseObservables(el);
+const getObservables = (el, nav, pages) => {
+  const [mousedown$, mousemove$, mouseup$] = getMouseObservables(el, nav);
 
   const [touchstart$, touchmove$, touchend$] = getTouchObservables(el);
 
@@ -185,6 +185,7 @@ const closePage = (pages) => {
 
 const init = () => {
   const root = document.getElementById('root');
+  const nav = document.querySelector('nav');
   const panels = Array.from(root.querySelectorAll('.panel')).map(outer => {
     const inner = outer.querySelector('.panel__inner');
     return {
@@ -199,7 +200,7 @@ const init = () => {
       square
     };
   });
-  const { drag$, reset$, dismiss$ } = getObservables(root, pages);
+  const { drag$, reset$, dismiss$ } = getObservables(root, nav, pages);
   drag$.subscribe(e => {
     const scales = deltaToScales(e.dx, e.dy);
     scales.forEach((scale, index) => {

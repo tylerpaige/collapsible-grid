@@ -11,15 +11,17 @@
         {{> page}}
       {{/each}}
     </div>
-    <div id="root" class="parent">
-      <div class="square-sizer">
-        <div class="inner">
-          {{#each data.panels}}
-            {{> panel}}
-          {{/each}}
+    <nav>
+      <div id="root" class="parent">
+        <div class="square-sizer">
+          <div class="inner">
+            {{#each data.panels}}
+              {{> panel}}
+            {{/each}}
+          </div>
         </div>
       </div>
-    </div>
+    </nav>
     <footer>
       <p>
         Click and drag a square.
