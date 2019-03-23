@@ -4,6 +4,7 @@ import { takeUntil, mergeMap, map, switchMap } from 'rxjs/operators';
 
 const getMouseObservables = el => {
   return ['mousedown', 'mousemove', 'mouseup'].map(event => {
+    //TODO: mouseup events should be on document, not el
     return fromEvent(el, event).pipe(
       map(e => ({
         x: e.clientX,
@@ -29,6 +30,7 @@ const getTouchObservables = el => {
   });
 };
 
+
 const getObservables = el => {
   const [mousedown$, mousemove$, mouseup$] = getMouseObservables(el);
 
@@ -41,13 +43,15 @@ const getObservables = el => {
   const drag$ = start$.pipe(
     switchMap(e => {
       const startingX = e.x;
-      const startingY = e.x;
+      const startingY = e.y;
+      const width = el.clientWidth;
+      const height = el.clientHeight;
 
       return move$.pipe(
         map(m => {
           return {
-            dx: m.x - startingX,
-            dy: m.y - startingY
+            dx : (m.x - startingX) / width,
+            dy : (m.y - startingY) / height
           };
         }),
         takeUntil(end$)
@@ -57,12 +61,18 @@ const getObservables = el => {
   const reset$ = start$.pipe(
     switchMap(e => {
       const startingX = e.x;
-      const startingY = e.x;
+      const startingY = e.y;
+      const width = el.clientWidth;
+      const height = el.clientHeight;
+
       return end$.pipe(
         map(e => {
+          const dx = (e.x - startingX) / width;
+          const dy = (e.y - startingY) / height;
+
           return {
-            dx: e.x - startingX,
-            dy: e.y - startingY
+            dx,
+            dy
           }
         })
       )
@@ -78,7 +88,10 @@ const init = () => {
   const el = document.querySelector('div');
   const { drag$, reset$ } = getObservables(el);
   drag$.subscribe(e => console.log('drag', e));
-  reset$.subscribe(e => console.log('reset', e));
+  reset$.subscribe(e => {
+    console.log('reset', e);
+    
+  });
 };
 
 document.addEventListener('DOMContentLoaded', init);
