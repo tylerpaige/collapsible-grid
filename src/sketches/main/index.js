@@ -1,5 +1,6 @@
 import './styles.scss';
 import clamp from '../../util/clamp';
+import roundTo from '../../util/round-to';
 import { fromEvent, merge } from 'rxjs';
 import { takeUntil, mergeMap, map, switchMap } from 'rxjs/operators';
 
@@ -94,7 +95,7 @@ const getObservables = (el, pages) => {
       );
     })
   );
-  const pageClicks = [...pages].map(p => fromEvent(p, 'click'));
+  const pageClicks = pages.map(({ page }) => fromEvent(page, 'click'));
   const dismiss$ = merge(...pageClicks);
   return {
     drag$,
@@ -156,17 +157,28 @@ const resetStep = (panels, deltaX, deltaY, descendingX, descendingY) => {
   }
 };
 
-const goTo = quadrant => {
+const goTo = (quadrant, page) => {
   if (typeof state.quadrant === 'number') {
     document.body.classList.remove(`page-${state.quadrant}`);
   }
   document.body.classList.add(`page-${quadrant}`);
+
+  const square = page.square;
+  /*  
+  sW * x = wW
+  sH * y = wH
+  */
+  const scaleX = roundTo(window.innerWidth / square.clientWidth, 2);
+  const scaleY = roundTo(window.innerHeight / square.clientHeight, 2);
+  const scale = Math.max(scaleX, scaleY)
+  square.style.transform = `scale(${scale})`;
   state.quadrant = quadrant;
 };
 
-const closePage = () => {
+const closePage = (pages) => {
   if (typeof state.quadrant === 'number') {
     document.body.classList.remove(`page-${state.quadrant}`);
+    pages[state.quadrant - 1].square.style.transform = '';
   }
   state.quadrant = false;
 };
@@ -180,7 +192,13 @@ const init = () => {
       inner
     };
   });
-  const pages = document.querySelectorAll('.page');
+  const pages = Array.from(document.querySelectorAll('.page')).map(page => {
+    const square = page.querySelector('.page__square');
+    return {
+      page,
+      square
+    };
+  });
   const { drag$, reset$, dismiss$ } = getObservables(root, pages);
   drag$.subscribe(e => {
     const scales = deltaToScales(e.dx, e.dy);
@@ -192,8 +210,6 @@ const init = () => {
   reset$.subscribe(e => {
     const descendingX = e.dx > 0;
     const descendingY = e.dy > 0;
-    resetStep(panels, e.dx, e.dy, descendingX, descendingY);
-
     const scales = deltaToScales(e.dx, e.dy);
     /*
     ---------
@@ -206,11 +222,16 @@ const init = () => {
       s => s.outer[0] >= 1.5 && s.outer[1] >= 1.5
     );
     if (quadrant >= 0) {
-      goTo(quadrant + 1);
+      goTo(quadrant + 1, pages[quadrant]);
+      setTimeout(() => {
+        resetStep(panels, e.dx, e.dy, descendingX, descendingY);
+      }, 300);
+    } else {
+      resetStep(panels, e.dx, e.dy, descendingX, descendingY);
     }
   });
   dismiss$.subscribe(e => {
-    closePage();
+    closePage(pages);
   });
 };
 
