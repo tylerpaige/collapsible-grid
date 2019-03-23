@@ -1,6 +1,89 @@
 import './styles.scss';
-import * as Rx from 'rxjs';
 import clamp from '../../util/clamp';
+import { fromEvent, merge } from 'rxjs';
+import { takeUntil, mergeMap, map, switchMap } from 'rxjs/operators';
+
+const getMouseObservables = el => {
+  return ['mousedown', 'mousemove', 'mouseup'].map(event => {
+    //TODO: mouseup events should be on document, not el
+    return fromEvent(el, event).pipe(
+      map(e => ({
+        x: e.clientX,
+        y: e.clientY
+      }))
+    );
+  });
+};
+
+const getTouchObservables = el => {
+  return ['touchstart', 'touchmove', 'touchend'].map(event => {
+    return fromEvent(el, event).pipe(
+      map(e => {
+        // if (e.type === 'touchend') {
+        //   console.log(e);
+        // }
+        return({
+          x: e.touches[0].clientX,
+          y: e.touches[0].clientY
+        })
+      })
+    );
+  });
+};
+
+
+const getObservables = el => {
+  const [mousedown$, mousemove$, mouseup$] = getMouseObservables(el);
+
+  const [touchstart$, touchmove$, touchend$] = getTouchObservables(el);
+
+  const start$ = merge(mousedown$, touchstart$);
+  const move$ = merge(mousemove$, touchmove$);
+  const end$ = merge(mouseup$, touchend$);
+
+  const drag$ = start$.pipe(
+    switchMap(e => {
+      const startingX = e.x;
+      const startingY = e.y;
+      const width = el.clientWidth;
+      const height = el.clientHeight;
+
+      return move$.pipe(
+        map(m => {
+          return {
+            dx : (m.x - startingX) / width,
+            dy : (m.y - startingY) / height
+          };
+        }),
+        takeUntil(end$)
+      );
+    })
+  );
+  const reset$ = start$.pipe(
+    switchMap(e => {
+      const startingX = e.x;
+      const startingY = e.y;
+      const width = el.clientWidth;
+      const height = el.clientHeight;
+
+      return end$.pipe(
+        map(e => {
+          const dx = (e.x - startingX) / width;
+          const dy = (e.y - startingY) / height;
+
+          return {
+            dx,
+            dy
+          }
+        })
+      )
+    })
+  );
+  return {
+    drag$,
+    reset$
+  };
+};
 
 const deltaToScales = (deltaX, deltaY) => {
   const growX = deltaX / 0.5 + 1;
@@ -28,6 +111,33 @@ const deltaToScales = (deltaX, deltaY) => {
   });
 };
 
+const resetStep = (panels, deltaX, deltaY, descendingX, descendingY) => {
+  const resetIncrement = 0.05;
+  const targetX = descendingX
+    ? deltaX - resetIncrement
+    : deltaX + resetIncrement;
+  const targetY = descendingY
+    ? deltaY - resetIncrement
+    : deltaY + resetIncrement;
+  const extremaX = descendingX ? [0, 1] : [-1, 0];
+  const extremaY = descendingY ? [0, 1] : [-1, 0];
+
+  const x = clamp(targetX, ...extremaX);
+  const y = clamp(targetY, ...extremaY);
+
+  const scales = deltaToScales(x, y);
+  scales.forEach((scale, index) => {
+    panels[index].outer.style.transform = `scale(${scale.outer})`;
+    panels[index].inner.style.transform = `scale(${scale.inner})`;
+  });
+
+  if (Math.abs(x) > 0 || Math.abs(y) > 0) {
+    requestAnimationFrame(() => {
+      resetStep(panels, x, y, descendingX, descendingY);
+    });
+  }
+};
+
 const init = () => {
   const root = document.getElementById('root');
   const panels = Array.from(root.querySelectorAll('.panel')).map(outer => {
@@ -37,117 +147,19 @@ const init = () => {
       inner
     };
   });
-
-  let START_X;
-  let START_Y;
-  let LAST_X;
-  let LAST_Y;
-  let TRACKING = false;
-
-  /*
-  ------------
-  START EVENTS
-  ------------
-  */
-  const mouseDown$ = Rx.fromEvent(document.documentElement, 'mousedown').map(
-    e => ({
-      x: e.clientX,
-      y: e.clientY
-    })
-  );
-  const touchStart$ = Rx.fromEvent(document.documentElement, 'touchstart').map(
-    e => ({
-      x: e.touches[0].clientX,
-      y: e.touches[0].clientY
-    })
-  );
-  const start$ = Rx.Observable.merge(mouseDown$, touchStart$);
-
-  start$.subscribe(({ x, y }) => {
-    START_X = x / root.clientWidth;
-    START_Y = y / root.clientHeight;
-    TRACKING = true;
-  });
-
-  /*
-  ------------
-  MOVE EVENTS
-  ------------
-  */
-  const mouseMove$ = Rx.fromEvent(document.documentElement, 'mousemove').map(
-    event => ({
-      x: event.clientX,
-      y: event.clientY
-    })
-  );
-  const touchMove$ = Rx.fromEvent(document.documentElement, 'touchmove').map(
-    event => ({
-      x: event.touches[0].clientX,
-      y: event.touches[0].clientY
-    })
-  );
-
-  const move$ = Rx.Observable.merge(mouseMove$, touchMove$);
-  move$.subscribe(({ x, y }) => {
-    if (TRACKING) {
-      const deltaX = x / root.clientWidth - START_X;
-      const deltaY = y / root.clientHeight - START_Y;
-
-      const scales = deltaToScales(deltaX, deltaY);
-      scales.forEach((scale, index) => {
-        panels[index].outer.style.transform = `scale(${scale.outer})`;
-        panels[index].inner.style.transform = `scale(${scale.inner})`;
-      });
-
-      LAST_X = deltaX;
-      LAST_Y = deltaY;
-    }
-  });
-
-  /*
-  -------------
-  RESET EVENTS
-  -------------
-  */
-  const mouseUp$ = Rx.fromEvent(document.documentElement, 'mouseup');
-  const touchEnd$ = Rx.fromEvent(document.documentElement, 'touchend');
-  const end$ = Rx.Observable.merge(mouseUp$, touchEnd$);
-
-  end$.subscribe(() => {
-    const descendingX = LAST_X > 0;
-    const descendingY = LAST_Y > 0;
-
-    resetStep(LAST_X, LAST_Y, descendingX, descendingY);
-
-    TRACKING = false;
-  });
-
-  const resetStep = (deltaX, deltaY, descendingX, descendingY) => {
-    const resetIncrement = 0.05;
-    const targetX = descendingX
-      ? deltaX - resetIncrement
-      : deltaX + resetIncrement;
-    const targetY = descendingY
-      ? deltaY - resetIncrement
-      : deltaY + resetIncrement;
-    const extremaX = descendingX ? [0, 1] : [-1, 0];
-    const extremaY = descendingY ? [0, 1] : [-1, 0];
-
-    const x = clamp(targetX, ...extremaX);
-    const y = clamp(targetY, ...extremaY);
-
-    const scales = deltaToScales(x, y);
+  const { drag$, reset$ } = getObservables(root);
+  drag$.subscribe(e => {
+    const scales = deltaToScales(e.dx, e.dy);
     scales.forEach((scale, index) => {
       panels[index].outer.style.transform = `scale(${scale.outer})`;
       panels[index].inner.style.transform = `scale(${scale.inner})`;
     });
-
-    if (Math.abs(x) > 0 || Math.abs(y) > 0) {
-      requestAnimationFrame(() => {
-        resetStep(x, y, descendingX, descendingY);
-      });
-    }
-  };
+  });
+  reset$.subscribe(e => {
+    const descendingX = e.dx > 0;
+    const descendingY = e.dy > 0;
+    resetStep(panels, e.dx, e.dy, descendingX, descendingY);
+  });
 };
 
 document.addEventListener('DOMContentLoaded', init);
