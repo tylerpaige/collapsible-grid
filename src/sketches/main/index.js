@@ -3,6 +3,10 @@ import clamp from '../../util/clamp';
 import { fromEvent, merge } from 'rxjs';
 import { takeUntil, mergeMap, map, switchMap } from 'rxjs/operators';
 
+const state = {
+  quadrant : false
+};
+
 const getMouseObservables = el => {
   return ['mousedown', 'mousemove', 'mouseup'].map(event => {
     //TODO: mouseup events should be on document, not el
@@ -32,7 +36,7 @@ const getTouchObservables = el => {
 };
 
 
-const getObservables = el => {
+const getObservables = (el, pages) => {
   const [mousedown$, mousemove$, mouseup$] = getMouseObservables(el);
 
   const [touchstart$, touchmove$, touchend$] = getTouchObservables(el);
@@ -79,9 +83,12 @@ const getObservables = el => {
       )
     })
   );
+  const pageClicks = [...pages].map(p => fromEvent(p, 'click'));
+  const dismiss$ = merge(...pageClicks);
   return {
     drag$,
-    reset$
+    reset$,
+    dismiss$
   };
 };
 
@@ -105,8 +112,8 @@ const deltaToScales = (deltaX, deltaY) => {
     */
     const innerScale = scale.map(s => 1 / s);
     return {
-      outer: scale.join(','),
-      inner: innerScale.join(',')
+      outer: scale,
+      inner: innerScale
     };
   });
 };
@@ -138,6 +145,21 @@ const resetStep = (panels, deltaX, deltaY, descendingX, descendingY) => {
   }
 };
 
+const goTo = (quadrant) => {
+  if (typeof state.quadrant === 'number') {
+    document.body.classList.remove(`page-${state.quadrant}`);
+  }
+  document.body.classList.add(`page-${quadrant}`);
+  state.quadrant = quadrant;
+};
+
+const closePage = () => {
+  if (typeof state.quadrant === 'number') {
+    document.body.classList.remove(`page-${state.quadrant}`);
+  }
+  state.quadrant = false;
+}
+
 const init = () => {
   const root = document.getElementById('root');
   const panels = Array.from(root.querySelectorAll('.panel')).map(outer => {
@@ -147,19 +169,37 @@ const init = () => {
       inner
     };
   });
-  const { drag$, reset$ } = getObservables(root);
+  const pages = document.querySelectorAll('.page');
+  const { drag$, reset$, dismiss$ } = getObservables(root, pages);
   drag$.subscribe(e => {
     const scales = deltaToScales(e.dx, e.dy);
     scales.forEach((scale, index) => {
-      panels[index].outer.style.transform = `scale(${scale.outer})`;
-      panels[index].inner.style.transform = `scale(${scale.inner})`;
+      panels[index].outer.style.transform = `scale(${scale.outer.join(',')})`;
+      panels[index].inner.style.transform = `scale(${scale.inner.join(',')})`;
     });
   });
   reset$.subscribe(e => {
     const descendingX = e.dx > 0;
     const descendingY = e.dy > 0;
     resetStep(panels, e.dx, e.dy, descendingX, descendingY);
+
+    const scales = deltaToScales(e.dx, e.dy);
+    /*
+    ---------
+    | 1 | 2 |
+    |---|---|
+    | 3 | 4 |
+    ---------
+    */
+    const quadrant = scales.findIndex(s => s.outer[0] >= 1.5 && s.outer[1] >= 1.5);
+    if (quadrant >= 0) {
+      goTo(quadrant + 1);
+    }
+
   });
+  dismiss$.subscribe(e => {
+    closePage();
+  })
 };
 
 document.addEventListener('DOMContentLoaded', init);

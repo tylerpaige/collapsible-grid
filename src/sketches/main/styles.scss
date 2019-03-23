@@ -95,7 +95,8 @@ $origins: top left, top right, bottom left, bottom right;
 $offsets: (0, 0), (-100%, 0), (0, -100%), (-100%, -100%);
 $floats: left, right, left, right;
 @for $i from 1 through 4 {
-  .panel:nth-child(#{$i}) {
+  .panel:nth-child(#{$i}),
+  .page:nth-child(#{$i}) {
     background-color: nth($colors, $i);
     color: nth($textColors, $i);
   }
@@ -120,6 +121,35 @@ $floats: left, right, left, right;
       top: 50%;
     } 
   }
+}
+
+.page {
+  transition: opacity 300ms ease-in;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  overflow: auto;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+body.page-1 .page:nth-child(1) {
+  opacity: 1;
+  pointer-events: all;
+}
+body.page-2 .page:nth-child(2) {
+  opacity: 1;
+  pointer-events: all;
+}
+body.page-3 .page:nth-child(3) {
+  opacity: 1;
+  pointer-events: all;
+}
+body.page-4 .page:nth-child(4) {
+  opacity: 1;
+  pointer-events: all;
 }
 
 .is-resetting {

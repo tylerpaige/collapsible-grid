@@ -6,6 +6,11 @@
     <link href="https://fonts.googleapis.com/css?family=Libre+Baskerville|Noticia+Text" rel="stylesheet"> 
   </head>
   <body>
+    <div class="pages">
+      {{#each data.panels}}
+        {{> page}}
+      {{/each}}
+    </div>
     <div id="root" class="parent">
       <div class="square-sizer">
         <div class="inner">
