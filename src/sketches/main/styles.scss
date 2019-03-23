@@ -144,13 +144,14 @@ $floats: left, right, left, right;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 3;
+  overflow: hidden;
+  // z-index: 3;
 }
 .page__square {
   width: 100%;
   max-width: 400px;
 
-  transition: opacity 300ms ease-in;
+  transition: opacity 300ms ease-in, transform 300ms ease-in;
   opacity: 0;
   border: 1px solid white;
 }
@@ -161,6 +162,7 @@ $floats: left, right, left, right;
   transition: opacity 300ms ease-in;
   transition-delay: 500ms;
   opacity: 0;
+  overflow: auto;
 }
 .page h1 {
   font-family: 'Libre Baskerville', serif;
@@ -175,6 +177,9 @@ body.page-1 .page:nth-child(1) {
   .page__content {
     opacity: 1;
   }
+  .page__square {
+    transform: scale(3);
+  }
 }
 body.page-2 .page:nth-child(2) {
   opacity: 1;
@@ -183,6 +188,9 @@ body.page-2 .page:nth-child(2) {
   .page__square,
   .page__content {
     opacity: 1;
+  }
+  .page__square {
+    transform: scale(3);
   }
 }
 body.page-3 .page:nth-child(3) {
@@ -193,6 +201,9 @@ body.page-3 .page:nth-child(3) {
   .page__content {
     opacity: 1;
   }
+  .page__square {
+    transform: scale(3);
+  }
 }
 body.page-4 .page:nth-child(4) {
   opacity: 1;
@@ -202,11 +213,14 @@ body.page-4 .page:nth-child(4) {
   .page__content {
     opacity: 1;
   }
+  .page__square {
+    transform: scale(3);
+  }
 }
 
 .page__inner {
   width: 100%;
-  max-width: 540px;
+  max-width: 400px;
   margin: 0 auto;
   padding: 0 10px;
 }

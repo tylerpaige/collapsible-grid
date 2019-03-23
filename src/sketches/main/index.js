@@ -4,13 +4,25 @@ import { fromEvent, merge } from 'rxjs';
 import { takeUntil, mergeMap, map, switchMap } from 'rxjs/operators';
 
 const state = {
-  quadrant : false
+  quadrant: false
 };
 
 const getMouseObservables = el => {
-  return ['mousedown', 'mousemove', 'mouseup'].map(event => {
-    //TODO: mouseup events should be on document, not el
-    return fromEvent(el, event).pipe(
+  return [
+    {
+      target: el,
+      event: 'mousedown'
+    },
+    {
+      target: el,
+      event: 'mousemove'
+    },
+    {
+      target: document,
+      event: 'mouseup'
+    }
+  ].map(({ target, event }) => {
+    return fromEvent(target, event).pipe(
       map(e => ({
         x: e.clientX,
         y: e.clientY
@@ -26,15 +38,14 @@ const getTouchObservables = el => {
         // if (e.type === 'touchend') {
         //   console.log(e);
         // }
-        return({
+        return {
           x: e.touches[0].clientX,
           y: e.touches[0].clientY
-        })
+        };
       })
     );
   });
 };
-
 
 const getObservables = (el, pages) => {
   const [mousedown$, mousemove$, mouseup$] = getMouseObservables(el);
@@ -55,8 +66,8 @@ const getObservables = (el, pages) => {
       return move$.pipe(
         map(m => {
           return {
-            dx : (m.x - startingX) / width,
-            dy : (m.y - startingY) / height
+            dx: (m.x - startingX) / width,
+            dy: (m.y - startingY) / height
           };
         }),
         takeUntil(end$)
@@ -78,9 +89,9 @@ const getObservables = (el, pages) => {
           return {
             dx,
             dy
-          }
+          };
         })
-      )
+      );
     })
   );
   const pageClicks = [...pages].map(p => fromEvent(p, 'click'));
@@ -145,7 +156,7 @@ const resetStep = (panels, deltaX, deltaY, descendingX, descendingY) => {
   }
 };
 
-const goTo = (quadrant) => {
+const goTo = quadrant => {
   if (typeof state.quadrant === 'number') {
     document.body.classList.remove(`page-${state.quadrant}`);
   }
@@ -158,7 +169,7 @@ const closePage = () => {
     document.body.classList.remove(`page-${state.quadrant}`);
   }
   state.quadrant = false;
-}
+};
 
 const init = () => {
   const root = document.getElementById('root');
@@ -191,15 +202,16 @@ const init = () => {
     | 3 | 4 |
     ---------
     */
-    const quadrant = scales.findIndex(s => s.outer[0] >= 1.5 && s.outer[1] >= 1.5);
+    const quadrant = scales.findIndex(
+      s => s.outer[0] >= 1.5 && s.outer[1] >= 1.5
+    );
     if (quadrant >= 0) {
       goTo(quadrant + 1);
     }
-
   });
   dismiss$.subscribe(e => {
     closePage();
-  })
+  });
 };
 
 document.addEventListener('DOMContentLoaded', init);
