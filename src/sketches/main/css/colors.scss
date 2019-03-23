@@ -1,0 +1,16 @@
+$colors: #FBF5E3, #FA4827, #FB9826, #276155;
+$textColors: #333333, #FFE2DC, #5c3400, #d7efde;
+$origins: top left, top right, bottom left, bottom right;
+$offsets: (0, 0), (-100%, 0), (0, -100%), (-100%, -100%);
+$floats: left, right, left, right;
+@for $i from 1 through 4 {
+  .panel:nth-child(#{$i}),
+  .page:nth-child(#{$i}) .page__content,
+  .page:nth-child(#{$i}) .page__square {
+    background-color: nth($colors, $i);
+    color: nth($textColors, $i);
+  }
+  .page:nth-child(#{$i}) .page__square {
+    border-color: nth($textColors, $i);
+  }
+}

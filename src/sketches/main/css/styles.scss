@@ -1,0 +1,29 @@
+@import 'colors';
+@import 'panels';
+@import 'pages';
+@import 'footer';
+@import 'typography';
+
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+}
+* {
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.is-resetting {
+  .panel,
+  .panel__inner {
+    transition: transform ease-out 300ms;
+  }
+}
