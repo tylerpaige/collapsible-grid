@@ -775,61 +775,22 @@ var init = function init() {
 
   var resetIncrement = 0.05;
 
-  var resetStep = function resetStep(deltaX, deltaY) {
-    //Doesn't really work for ones where delta is negative
-    //Gotta do something with absolute values
-    var x;
-    var y;
-    var needsMoreX = true;
-    var needsMoreY = true;
-
-    if (deltaX < 0) {
-      x = deltaX + resetIncrement;
-
-      if (x > 0) {
-        needsMoreX = false;
-        x = 0;
-      }
-    } else if (deltaX > 0) {
-      x = deltaX - resetIncrement;
-
-      if (x < 0) {
-        needsMoreX = false;
-        x = 0;
-      }
-    } else {
-      needsMoreX = false;
-      x = 0;
-    }
-
-    if (deltaY < 0) {
-      y = deltaY + resetIncrement;
-
-      if (y > 0) {
-        needsMoreY = false;
-        y = 0;
-      }
-    } else if (deltaY > 0) {
-      y = deltaY - resetIncrement;
-
-      if (y < 0) {
-        needsMoreY = false;
-        y = 0;
-      }
-    } else {
-      needsMoreY = false;
-      y = 0;
-    }
-
+  var resetStep = function resetStep(deltaX, deltaY, descendingX, descendingY) {
+    var targetX = descendingX ? deltaX - resetIncrement : deltaX + resetIncrement;
+    var targetY = descendingY ? deltaY - resetIncrement : deltaY + resetIncrement;
+    var extremaX = descendingX ? [0, 1] : [-1, 0];
+    var extremaY = descendingY ? [0, 1] : [-1, 0];
+    var x = _util_clamp__WEBPACK_IMPORTED_MODULE_2__["default"].apply(void 0, [targetX].concat(extremaX));
+    var y = _util_clamp__WEBPACK_IMPORTED_MODULE_2__["default"].apply(void 0, [targetY].concat(extremaY));
     var scales = deltaToScales(x, y);
     scales.forEach(function (scale, index) {
       panels[index].outer.style.transform = "scale(".concat(scale.outer, ")");
       panels[index].inner.style.transform = "scale(".concat(scale.inner, ")");
     });
 
-    if (needsMoreX || needsMoreY) {
+    if (Math.abs(x) > 0 || Math.abs(y) > 0) {
       requestAnimationFrame(function () {
-        resetStep(x, y);
+        resetStep(x, y, descendingX, descendingY);
       });
     }
   };
@@ -857,7 +818,13 @@ var init = function init() {
     LAST_Y = deltaY;
   });
   root.addEventListener('touchend', function (e) {
-    resetStep(LAST_X, LAST_Y);
+    console.log({
+      LAST_X: LAST_X,
+      LAST_Y: LAST_Y
+    });
+    var descendingX = LAST_X > 0;
+    var descendingY = LAST_Y > 0;
+    resetStep(LAST_X, LAST_Y, descendingX, descendingY);
   });
   document.addEventListener('mouseup', function (e) {
     resetStep(LAST_X, LAST_Y);
