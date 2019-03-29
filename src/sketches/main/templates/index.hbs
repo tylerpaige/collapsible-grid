@@ -7,7 +7,7 @@
   </head>
   <body>
     <div class="pages">
-      {{#each data.panels}}
+      {{#each data.stories}}
         {{> page}}
       {{/each}}
     </div>
@@ -15,7 +15,7 @@
       <div id="root" class="parent">
         <div class="square-sizer">
           <div class="inner">
-            {{#each data.panels}}
+            {{#each data.stories}}
               {{> panel}}
             {{/each}}
           </div>

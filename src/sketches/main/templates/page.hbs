@@ -6,34 +6,10 @@
   </div>
   <div class="page__content">
     <div class="page__inner">
-      <h1>{{ thumbnail }}</h1>
-      <p>
-        Sit nisi excepteur exercitation nulla ut veniam occaecat occaecat. Deserunt nostrud qui qui eu aliqua dolor incididunt non id mollit sunt laborum irure. Ut proident aliqua esse consectetur sit Lorem adipisicing et id. Et consequat veniam minim ipsum nisi non ea aliqua est deserunt est eiusmod.
-      </p>
-      <p>
-        Adipisicing occaecat elit non nulla minim reprehenderit consectetur Lorem labore cillum. Ad ullamco ut proident consequat elit sit laboris quis elit. Sint ad reprehenderit irure do officia tempor cupidatat do deserunt sit ipsum incididunt voluptate. Lorem cupidatat aliqua esse duis voluptate aliqua consectetur tempor ad. Est nisi elit non consectetur laborum esse irure elit eiusmod eiusmod.
-      </p>
-      <p>
-        Velit consequat duis consectetur ad aliquip labore consequat tempor. Lorem incididunt culpa do excepteur labore eu officia mollit enim reprehenderit. Minim qui elit dolor laboris laboris ut magna nulla proident ullamco ex duis excepteur. Eu in commodo Lorem esse officia dolore cillum.
-      </p>
-      <p>
-        Sit nisi excepteur exercitation nulla ut veniam occaecat occaecat. Deserunt nostrud qui qui eu aliqua dolor incididunt non id mollit sunt laborum irure. Ut proident aliqua esse consectetur sit Lorem adipisicing et id. Et consequat veniam minim ipsum nisi non ea aliqua est deserunt est eiusmod.
-      </p>
-      <p>
-        Adipisicing occaecat elit non nulla minim reprehenderit consectetur Lorem labore cillum. Ad ullamco ut proident consequat elit sit laboris quis elit. Sint ad reprehenderit irure do officia tempor cupidatat do deserunt sit ipsum incididunt voluptate. Lorem cupidatat aliqua esse duis voluptate aliqua consectetur tempor ad. Est nisi elit non consectetur laborum esse irure elit eiusmod eiusmod.
-      </p>
-      <p>
-        Velit consequat duis consectetur ad aliquip labore consequat tempor. Lorem incididunt culpa do excepteur labore eu officia mollit enim reprehenderit. Minim qui elit dolor laboris laboris ut magna nulla proident ullamco ex duis excepteur. Eu in commodo Lorem esse officia dolore cillum.
-      </p>
-      <p>
-        Sit nisi excepteur exercitation nulla ut veniam occaecat occaecat. Deserunt nostrud qui qui eu aliqua dolor incididunt non id mollit sunt laborum irure. Ut proident aliqua esse consectetur sit Lorem adipisicing et id. Et consequat veniam minim ipsum nisi non ea aliqua est deserunt est eiusmod.
-      </p>
-      <p>
-        Adipisicing occaecat elit non nulla minim reprehenderit consectetur Lorem labore cillum. Ad ullamco ut proident consequat elit sit laboris quis elit. Sint ad reprehenderit irure do officia tempor cupidatat do deserunt sit ipsum incididunt voluptate. Lorem cupidatat aliqua esse duis voluptate aliqua consectetur tempor ad. Est nisi elit non consectetur laborum esse irure elit eiusmod eiusmod.
-      </p>
-      <p>
-        Velit consequat duis consectetur ad aliquip labore consequat tempor. Lorem incididunt culpa do excepteur labore eu officia mollit enim reprehenderit. Minim qui elit dolor laboris laboris ut magna nulla proident ullamco ex duis excepteur. Eu in commodo Lorem esse officia dolore cillum.
-      </p>
+      <h1>{{ title }}</h1>
+      {{#each full-version}}
+        <p>{{{.}}}</p>
+      {{/each}}
     </div>
   </div>
 </div>

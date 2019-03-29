@@ -1,37 +1,41 @@
 {
-  "panels" : [
+  "stories" : [
     {
-      "thumbnail" : "Questions for Big Data",
-      "content" : [
+      "title" : "Questions for Big Data",
+      "short-version" : [
         "I ask my banking app for my balance.",
         "“Why?” it replies.",
         "Such petulance from an interface, as if I hadn’t spent the morning thinking how to approach him, as if I hadn’t spent hours working up the confidence.",
         "“Does my face no longer meet your eyes? My features distant?”",
         "“Tell me, then, in which city is your vacation home?”"
-      ]
+      ],
+      "full-version" : [] 
     },
     {
-      "thumbnail" : "Gender Ecstatica",
-      "content" : [
+      "title" : "Gender Ecstatica",
+      "short-version" : [
         "A thousand algorithms could watch the subtle twitch of the phone’s gyroscope in my hand, could hear the shake and quiver in my voice, and could count the grains of sand in my shoes, but they’d never be as certain as my love for you in your turning body."
-      ]
+      ],
+      "full-version" : []
     },
     {
-      "thumbnail" : "Running from Congress",
-      "content" : [
+      "title" : "Running from Congress",
+      "short-version" : [
         "What’s visible from space?",
         "The Burj Khalifa spire? An Oklahoma corn maze? An arctic fire seen from a ways?",
         "Maybe the feathered boundary between day and night.",
         "Good evening, I’m Chris Hayes, and we’ll be looking at the big picture in tonight’s broadcast."
-      ]
+      ],
+      "full-version" : []
     },
     {
-      "thumbnail" : "Move through life in the color Green",
-      "content" : [
+      "title" : "Move through life in the color Green",
+      "short-version" : [
         "Usually, it involves me looking to my side, keeping a forward stride, a sort of delicate dance to keep vertical. I feel like I’m dancing! A dance I do with you, you always by my side.",
         "We could loop around the block again.",
         "There’s nothing better than when you enter the room. You have the most beautiful green eyes."
-      ]
+      ],
+      "full-version" : []
     }
   ]
 }
