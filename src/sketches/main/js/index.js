@@ -27,7 +27,7 @@ const init = () => {
   });
 
   //Event observers
-  const { drag$, reset$, dismiss$ } = getObservables(root, nav, pages);
+  const { drag$, reset$, dismiss$, tabNavigation$ } = getObservables(root, nav, pages);
 
   //Event handlers
   drag$.subscribe(e => {
@@ -49,7 +49,7 @@ const init = () => {
     ---------
     */
     const quadrant = scales.findIndex(
-      s => s.outer[0] >= 1.5 && s.outer[1] >= 1.5
+      s => s.outer[0] >= 1.66 && s.outer[1] >= 1.66
     );
     if (quadrant >= 0) {
       navigation.goTo(state, quadrant + 1, pages[quadrant]);
@@ -62,6 +62,11 @@ const init = () => {
   });
   dismiss$.subscribe(e => {
     navigation.closePage(state, pages);
+  });
+
+
+  tabNavigation$.subscribe(tabIndex => {
+    navigation.goTo(state, tabIndex, pages[tabIndex - 1]);
   });
 };
 

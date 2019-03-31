@@ -1,5 +1,5 @@
 import { fromEvent, merge } from 'rxjs';
-import { takeUntil, map, switchMap } from 'rxjs/operators';
+import { takeUntil, map, filter, switchMap, scan } from 'rxjs/operators';
 
 const getMouseObservables = (el, nav) => {
   return [
@@ -41,10 +41,20 @@ const getTouchObservables = el => {
   });
 };
 
+const getKeyboardObservables = () => {
+  const keyup = fromEvent(window, 'keyup');
+  const keyCodes = [27, 9, 13]; //esc, tab, enter
+  return keyCodes.map(keyCode => {
+    return keyup.pipe(filter(e => e.keyCode === keyCode))
+  });
+};
+
 const getObservables = (el, nav, pages) => {
   const [mousedown$, mousemove$, mouseup$] = getMouseObservables(el, nav);
 
   const [touchstart$, touchmove$, touchend$] = getTouchObservables(el);
+
+  const [escape$, tab$, enter$] = getKeyboardObservables();
 
   const start$ = merge(mousedown$, touchstart$);
   const move$ = merge(mousemove$, touchmove$);
@@ -88,12 +98,24 @@ const getObservables = (el, nav, pages) => {
       );
     })
   );
+
   const pageClicks = pages.map(({ page }) => fromEvent(page, 'click'));
-  const dismiss$ = merge(...pageClicks);
+  const dismiss$ = merge(...pageClicks, escape$);
+
+  const tabCycle$ = tab$.pipe(
+    scan(count => count + 1, -1),
+    map(count => (count % 4) + 1)
+  );
+
+  const tabNavigation$ = enter$.pipe(
+    map(e => document.activeElement.tabIndex)
+  );
+
   return {
     drag$,
     reset$,
-    dismiss$
+    dismiss$,
+    tabNavigation$
   };
 };
 
