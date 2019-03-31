@@ -818,16 +818,14 @@ var init = function init() {
     LAST_Y = deltaY;
   });
   root.addEventListener('touchend', function (e) {
-    console.log({
-      LAST_X: LAST_X,
-      LAST_Y: LAST_Y
-    });
     var descendingX = LAST_X > 0;
     var descendingY = LAST_Y > 0;
     resetStep(LAST_X, LAST_Y, descendingX, descendingY);
   });
   document.addEventListener('mouseup', function (e) {
-    resetStep(LAST_X, LAST_Y);
+    var descendingX = LAST_X > 0;
+    var descendingY = LAST_Y > 0;
+    resetStep(LAST_X, LAST_Y, descendingX, descendingY);
     root.removeEventListener('mousemove', followMouse);
   });
 };

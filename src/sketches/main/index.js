@@ -60,6 +60,7 @@ const init = () => {
 
   const resetIncrement = 0.05;
   const resetStep = (deltaX, deltaY, descendingX, descendingY) => {
+
     const targetX = descendingX
       ? deltaX - resetIncrement
       : deltaX + resetIncrement;
@@ -111,14 +112,15 @@ const init = () => {
     LAST_Y = deltaY;
   });
   root.addEventListener('touchend', e => {
-    console.log({ LAST_X, LAST_Y });
     const descendingX = LAST_X > 0;
     const descendingY = LAST_Y > 0;
 
     resetStep(LAST_X, LAST_Y, descendingX, descendingY);
   });
   document.addEventListener('mouseup', e => {
-    resetStep(LAST_X, LAST_Y);
+    const descendingX = LAST_X > 0;
+    const descendingY = LAST_Y > 0;
+    resetStep(LAST_X, LAST_Y, descendingX, descendingY);
     root.removeEventListener('mousemove', followMouse);
   });
 };
