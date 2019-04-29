@@ -20,9 +20,11 @@ const init = () => {
   });
   const pages = Array.from(document.querySelectorAll('.page')).map(page => {
     const square = page.querySelector('.page__square');
+    const closeButton = page.querySelector('.page__control--close');
     return {
       page,
-      square
+      square,
+      closeButton
     };
   });
 
@@ -37,6 +39,7 @@ const init = () => {
       panels[index].inner.style.transform = `scale(${scale.inner.join(',')})`;
     });
   });
+
   reset$.subscribe(e => {
     const descendingX = e.dx > 0;
     const descendingY = e.dy > 0;
@@ -60,10 +63,10 @@ const init = () => {
       resetStep(panels, e.dx, e.dy, descendingX, descendingY);
     }
   });
+  
   dismiss$.subscribe(e => {
     navigation.closePage(state, pages);
   });
-
 
   tabNavigation$.subscribe(tabIndex => {
     navigation.goTo(state, tabIndex, pages[tabIndex - 1]);

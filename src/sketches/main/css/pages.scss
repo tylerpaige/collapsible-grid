@@ -38,6 +38,7 @@
   transition-delay: 500ms;
   opacity: 0;
   overflow: auto;
+  z-index: 1;
 }
 .page h1 {
   font-family: 'Libre Baskerville', serif;
@@ -52,52 +53,16 @@ body.page-4 {
     opacity: 1;
   }
 }
-body.page-1 .page:nth-child(1) {
-  opacity: 1;
-  pointer-events: all;
 
-  .page__square,
-  .page__content {
+@for $n from 1 through 4 {
+  body.page-#{$n} .page:nth-child(#{$n}) {
     opacity: 1;
-  }
-  .page__square {
-    
-  }
-}
-body.page-2 .page:nth-child(2) {
-  opacity: 1;
-  pointer-events: all;
-
-  .page__square,
-  .page__content {
-    opacity: 1;
-  }
-  .page__square {
-    
-  }
-}
-body.page-3 .page:nth-child(3) {
-  opacity: 1;
-  pointer-events: all;
-
-  .page__square,
-  .page__content {
-    opacity: 1;
-  }
-  .page__square {
-    
-  }
-}
-body.page-4 .page:nth-child(4) {
-  opacity: 1;
-  pointer-events: all;
-
-  .page__square,
-  .page__content {
-    opacity: 1;
-  }
-  .page__square {
-    
+    pointer-events: all;
+  
+    .page__square,
+    .page__content {
+      opacity: 1;
+    }
   }
 }
 
@@ -106,4 +71,27 @@ body.page-4 .page:nth-child(4) {
   max-width: 400px;
   margin: 0 auto;
   padding: 0 10px;
+}
+
+.page__controls {
+  position: absolute;
+  top: 5px;
+  left: 6px;
+  background: white;
+  padding: 3px 8px 6px;
+  z-index: 2;
+}
+.page__control--close {
+  font-family: 'Noticia Text', serif;
+  text-transform: uppercase;
+  line-height: 17px;
+
+  border-bottom: 1px solid black;
+
+  a,
+  a:link,
+  a:visited {
+    text-decoration: none;
+    color: black;
+  }
 }

@@ -29,9 +29,9 @@ const getTouchObservables = el => {
   return ['touchstart', 'touchmove', 'touchend'].map(event => {
     return fromEvent(el, event).pipe(
       map(e => {
-        // if (e.type === 'touchend') {
-        //   console.log(e);
-        // }
+        if (e.type === 'touchend') {
+          console.log(e);
+        }
         return {
           x: e.touches[0].clientX,
           y: e.touches[0].clientY
@@ -45,21 +45,22 @@ const getKeyboardObservables = () => {
   const keyup = fromEvent(window, 'keyup');
   const keyCodes = [27, 9, 13]; //esc, tab, enter
   return keyCodes.map(keyCode => {
-    return keyup.pipe(filter(e => e.keyCode === keyCode))
+    return keyup.pipe(filter(e => e.keyCode === keyCode));
   });
 };
 
 const getObservables = (el, nav, pages) => {
+  //Get generic user input observables
   const [mousedown$, mousemove$, mouseup$] = getMouseObservables(el, nav);
-
   const [touchstart$, touchmove$, touchend$] = getTouchObservables(el);
-
   const [escape$, tab$, enter$] = getKeyboardObservables();
 
+  //Marry touch events with mouse events for easier handling
   const start$ = merge(mousedown$, touchstart$);
   const move$ = merge(mousemove$, touchmove$);
   const end$ = merge(mouseup$, touchend$);
-
+  
+  //Combine input observables into meaningful actions
   const drag$ = start$.pipe(
     switchMap(e => {
       const startingX = e.x;
@@ -99,17 +100,22 @@ const getObservables = (el, nav, pages) => {
     })
   );
 
-  const pageClicks = pages.map(({ page }) => fromEvent(page, 'click'));
-  const dismiss$ = merge(...pageClicks, escape$);
+  const { closeButtonClicks, pageClicks } = pages.reduce(
+    (acc, page) => {
+      acc.closeButtonClicks.push(fromEvent(page.closeButton, 'click'));
+      acc.pageClicks.push(fromEvent(page.page, 'click'));
+      return acc;
+    },
+    { closeButtonClicks: [], pageClicks: [] }
+  );
+  const dismiss$ = merge(...pageClicks, ...closeButtonClicks, escape$);
 
   const tabCycle$ = tab$.pipe(
     scan(count => count + 1, -1),
     map(count => (count % 4) + 1)
   );
 
-  const tabNavigation$ = enter$.pipe(
-    map(e => document.activeElement.tabIndex)
-  );
+  const tabNavigation$ = enter$.pipe(map(e => document.activeElement.tabIndex));
 
   return {
     drag$,
@@ -119,6 +125,4 @@ const getObservables = (el, nav, pages) => {
   };
 };
 
-export {
-  getObservables
-}
+export { getObservables };
