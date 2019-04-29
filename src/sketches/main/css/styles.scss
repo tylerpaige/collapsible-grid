@@ -20,10 +20,3 @@ body {
   box-sizing: border-box;
   user-select: none;
 }
-
-.is-resetting {
-  .panel,
-  .panel__inner {
-    transition: transform ease-out 300ms;
-  }
-}

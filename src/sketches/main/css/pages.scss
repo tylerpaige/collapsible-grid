@@ -81,6 +81,9 @@ body.page-4 {
   padding: 3px 8px 6px;
   z-index: 2;
 }
+.page__control {
+  cursor: pointer;
+}
 .page__control--close {
   font-family: 'Noticia Text', serif;
   text-transform: uppercase;
